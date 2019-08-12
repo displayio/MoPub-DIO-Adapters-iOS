@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
     s.homepage         = 'https://www.display.io/'
     s.license          = { :type => '', :file => 'LICENSE' }
     s.author           = { 'Ariel Malka' => 'arielm@display.io' }
-    s.source           = { :git => "https://github.com/displayio/MoPub-DIO-Adapters-iOS", :tag => "#{s.version}"}
+    s.source           = { :git => "https://github.com/displayio/MoPub-DIO-Adapters-iOS.git", :tag => "#{s.version}"}
     s.ios.deployment_target = '11.0'
     s.static_framework = true
     s.subspec 'MoPub' do |ms|
