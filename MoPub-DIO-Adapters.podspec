@@ -5,7 +5,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'MoPub-DIO-Adapters'
-    s.version          = '1.0.4'
+    s.version          = '1.1.0'
     s.summary          = 'DIO Adapters for mediating through MoPub.'
     s.homepage         = 'https://www.display.io/'
     s.license          = { :type => '', :file => 'LICENSE' }
