@@ -20,7 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIOMopubBannerAdapter : MPBannerCustomEvent
 
-+ (UIView*)getAdView;
 @end
 
 NS_ASSUME_NONNULL_END

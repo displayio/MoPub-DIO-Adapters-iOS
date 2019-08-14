@@ -9,11 +9,7 @@
 #import "DIOMopubBannerAdapter.h"
 #import <DIOSDK/DIOController.h>
 
-static UIView *dioAdView;
-
 @interface DIOMopubBannerAdapter ()
-
-@property (nonatomic, strong) DIOAd *dioAd;
 
 @end
 
@@ -33,29 +29,23 @@ static UIView *dioAdView;
     }
 }
 
-    - (void)loadDioBanner:(NSString *)placementId{
-        DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
-        DIOAdRequest *request = [placement newAdRequest];
-        
-        [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
-            [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
-                self.dioAd = ad;
-                dioAdView = [self.dioAd view];
-                [self.delegate bannerCustomEvent:self didLoadAd:[self.dioAd view]];                                    // find out what View to put instead
-            } failedHandler:^(NSString *message){
-                NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
-                                                     code:100
-                                                 userInfo:@{NSLocalizedDescriptionKey:message}];
-                [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
-                NSLog(message);
-            }];
-        } noAdHandler:^{
-            NSLog(@"No ad provider");
+- (void)loadDioBanner:(NSString *)placementId{
+    DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
+    DIOAdRequest *request = [placement newAdRequest];
+    
+    [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
+        [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
+            [self.delegate bannerCustomEvent:self didLoadAd:[ad view]];                                    // find out what View to put instead
+        } failedHandler:^(NSString *message){
+            NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                                                 code:100
+                                             userInfo:@{NSLocalizedDescriptionKey:message}];
+            [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
+            NSLog(message);
         }];
-    }
-
-+ (UIView*)getAdView{
-    return dioAdView;
+    } noAdHandler:^{
+        NSLog(@"No ad provider");
+    }];
 }
 
 @end
