@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
     s.license          = { :type => '', :file => 'LICENSE' }
     s.author           = { 'Ariel Malka' => 'arielm@display.io' }
     s.source           = { :git => "https://github.com/displayio/MoPub-DIO-Adapters-iOS.git", :tag => "#{s.version}"}
-    s.ios.deployment_target = '11.0'
+    s.ios.deployment_target = '10.0'
     s.static_framework = true
     s.subspec 'MoPub' do |ms|
        ms.dependency 'mopub-ios-sdk/Core', '~> 5.8'
