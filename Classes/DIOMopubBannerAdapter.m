@@ -25,6 +25,7 @@
                                          userInfo:@{NSLocalizedDescriptionKey:@"DIOController not initialized!"}];
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
     }else {
+        NSLog(@"Trying to load banner for placement %@", placementId);
         [self loadDioBanner:placementId];
     }
 }
@@ -35,16 +36,16 @@
     
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
-            [self.delegate bannerCustomEvent:self didLoadAd:[ad view]];                                    // find out what View to put instead
+            [self.delegate bannerCustomEvent:self didLoadAd:[ad view]];
         } failedHandler:^(NSString *message){
             NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                  code:100
                                              userInfo:@{NSLocalizedDescriptionKey:message}];
             [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
-            NSLog(message);
+            NSLog(@"%@", message);
         }];
     } noAdHandler:^{
-        NSLog(@"No ad provider");
+        NSLog(@"No ad");
     }];
 }
 

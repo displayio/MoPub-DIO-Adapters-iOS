@@ -20,7 +20,6 @@
 
 - (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info{
     
-        NSString *appId = [info objectForKey:@"appid"];
         NSString *placementId = [info objectForKey:@"placementid"];
     
     if (![DIOController sharedInstance].initialized) {
@@ -47,7 +46,7 @@
                                                  code:100
                                              userInfo:@{NSLocalizedDescriptionKey:message}];
             [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError: error];
-            NSLog(message);
+            NSLog(@"%@", message);
         }];
     } noAdHandler:^{
         NSLog(@"No ad provider");
