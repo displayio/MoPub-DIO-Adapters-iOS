@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
     s.version          = '1.1.1'
     s.summary          = 'DIO Adapters for mediating through MoPub.'
     s.homepage         = 'https://www.display.io/'
-    s.license          = { :type => '', :file => 'LICENSE' }
+    s.license          = { :type => 'Apache-2.0', :file => 'LICENSE' }
     s.author           = { 'Ariel Malka' => 'arielm@display.io' }
     s.source           = { :git => "https://github.com/displayio/MoPub-DIO-Adapters-iOS.git", :tag => "#{s.version}"}
     s.ios.deployment_target = '10.0'
