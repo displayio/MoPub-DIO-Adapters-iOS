@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
     s.author           = { 'Ariel Malka' => 'arielm@display.io' }
     s.source           = { :git => "https://github.com/displayio/MoPub-DIO-Adapters-iOS.git", :tag => "#{s.version}"}
     s.ios.deployment_target = '10.0'
+    s.pod_target_xcconfig = { 'VALID_ARCHS' => 'arm64 x86_64' }
     s.static_framework = true
     s.subspec 'MoPub' do |ms|
        ms.dependency 'mopub-ios-sdk/Core', '~> 5.8'
