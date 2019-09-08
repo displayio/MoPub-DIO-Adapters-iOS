@@ -22,7 +22,6 @@
 
 - (void)requestRewardedVideoWithCustomEventInfo:(NSDictionary *)info{
     
-    NSString *appId = [info objectForKey:@"appid"];
     NSString *placementId = [info objectForKey:@"placementid"];
     
     if (![DIOController sharedInstance].initialized) {
