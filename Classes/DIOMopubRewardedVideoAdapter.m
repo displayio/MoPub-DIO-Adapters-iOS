@@ -68,7 +68,6 @@
 }
 
 - (void)presentRewardedVideoFromViewController:(UIViewController *)rootViewController{
-     NSLog(@"WHY this method doesn't called by MoPub???");
     if (self.dioAd != nil) {
         [self.dioAd showAdFromViewController:rootViewController eventHandler:^(DIOAdEvent event){
             switch (event) {
