@@ -13,6 +13,7 @@
 #else
 #import "MPRewardedVideo.h"
 #import "MPRewardedVideoCustomEvent.h"
+#import "MPRewardedVideoReward.h"
 #endif
 
 NS_ASSUME_NONNULL_BEGIN

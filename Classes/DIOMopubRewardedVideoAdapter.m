@@ -94,12 +94,13 @@
                     self.dioAd = nil;
                     break;
                     
-                case DIOAdEventOnAdCompleted:
-                    [self.delegate rewardedVideoWillDisappearForCustomEvent:self];
-                    [self.delegate rewardedVideoDidDisappearForCustomEvent:self];
+                case DIOAdEventOnAdCompleted: {
+                    MPRewardedVideoReward *reward = [[MPRewardedVideoReward alloc] initWithCurrencyType:@"" amount:[NSNumber numberWithInt:0]];
+                    [self.delegate rewardedVideoShouldRewardUserForCustomEvent:self reward:reward];
                     NSLog(@"AdEventOnAdCompleted");
                     self.dioAd = nil;
                     break;
+                }
             }
         }];
     }
