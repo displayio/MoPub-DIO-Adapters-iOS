@@ -38,15 +38,10 @@
 - (void)loadDioRewardedVideo:(NSString *)placementId{
     DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
     DIOAdRequest *request = [placement newAdRequest];
-    NSLog(@"(void)loadDioRewardedVideo:(NSString *)placementId");
 
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
             self.dioAd = ad;
-            
-//            for(NSString *key in [ad.data allKeys]) {
-//                NSLog(@"%@",[ad.data objectForKey:key]);
-//            }
             
             [self.delegate rewardedVideoDidLoadAdForCustomEvent:self];
             NSLog(@"Ad for placement %@ received!", placementId);
@@ -68,6 +63,7 @@
 }
 
 - (void)presentRewardedVideoFromViewController:(UIViewController *)rootViewController{
+    
     if (self.dioAd != nil) {
         [self.dioAd showAdFromViewController:rootViewController eventHandler:^(DIOAdEvent event){
             switch (event) {
@@ -94,13 +90,14 @@
                     self.dioAd = nil;
                     break;
                     
-                case DIOAdEventOnAdCompleted: {
-                    MPRewardedVideoReward *reward = [[MPRewardedVideoReward alloc] initWithCurrencyType:@"" amount:[NSNumber numberWithInt:0]];
-                    [self.delegate rewardedVideoShouldRewardUserForCustomEvent:self reward:reward];
+                case DIOAdEventOnAdCompleted:
+                    [self.delegate rewardedVideoWillDisappearForCustomEvent:self];
+                    [self.delegate rewardedVideoDidDisappearForCustomEvent:self];
+                    [self.delegate rewardedVideoShouldRewardUserForCustomEvent:self reward:nil]; // TODO reward?
+
                     NSLog(@"AdEventOnAdCompleted");
                     self.dioAd = nil;
                     break;
-                }
             }
         }];
     }
