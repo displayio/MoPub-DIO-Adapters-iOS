@@ -14,6 +14,7 @@
 #import "MPInterstitialCustomEvent.h"
 #endif
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DIOMopubInterstitialAdapter : MPInterstitialCustomEvent

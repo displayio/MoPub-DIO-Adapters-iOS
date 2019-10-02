@@ -34,7 +34,6 @@
     DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
     DIOAdRequest *request = [placement newAdRequest];
     
-    [request setDetailsRequired:YES];
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
             [self.delegate bannerCustomEvent:self didLoadAd:[ad view]];
