@@ -1,19 +1,20 @@
 //
-//  DIOBannerMopubAdapter.m
+//  DIOMopubInFeedAdapter.m
 //  MopubAdapterForiOS
 //
 //  Created by rdorofeev on 7/15/19.
 //  Copyright © 2019 rdorofeev. All rights reserved.
 //
 
-#import "DIOMopubBannerAdapter.h"
+#import "DIOMopubInFeedAdapter.h"
 #import <DIOSDK/DIOController.h>
+#import "MoPub.h"
 
-@interface DIOMopubBannerAdapter ()
+@interface DIOMopubInFeedAdapter ()
 
 @end
 
-@implementation DIOMopubBannerAdapter
+@implementation DIOMopubInFeedAdapter
 
 - (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info{
     NSString *placementId = [info objectForKey:@"placementid"];
@@ -26,12 +27,27 @@
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
     }else {
         NSLog(@"Trying to load banner for placement %@", placementId);
+        DIOConsentState state = [[MoPub sharedInstance] canCollectPersonalInfo] ? DIOConsentStateYES : DIOConsentStateNO;
+        DIOConsentState gdpr = [[MoPub sharedInstance] isGDPRApplicable] ? DIOConsentStateYES : DIOConsentStateNO;
+        [[DIOController sharedInstance] setConsentData:state gdprState:gdpr];
+        [[DIOController sharedInstance] setMediationPlatform:DIOMediationPlatformMopub];
+        
         [self loadDioBanner:placementId];
     }
 }
 
 - (void)loadDioBanner:(NSString *)placementId{
-    DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
+    DIOPlacement *placement;
+    @try {
+        placement = [[DIOController sharedInstance] placementWithId:placementId];
+    } @catch (NSException *exception) {
+        NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                                             code:100
+                                         userInfo:@{NSLocalizedDescriptionKey:@"Invalid placement"}];
+        [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
+        return;
+    }
+    
     DIOAdRequest *request = [placement newAdRequest];
     
     [request setDetailsRequired:YES];

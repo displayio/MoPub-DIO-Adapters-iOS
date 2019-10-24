@@ -1,5 +1,5 @@
 //
-//  DIOBannerMopubAdapter.h
+//  DIOMopubInFeedAdapter.h
 //  MopubAdapterForiOS
 //
 //  Created by rdorofeev on 7/15/19.
@@ -18,7 +18,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIOMopubBannerAdapter : MPBannerCustomEvent
+@interface DIOMopubInFeedAdapter : MPBannerCustomEvent
 
 @end
 

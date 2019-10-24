@@ -8,7 +8,7 @@
 
 #import "DIOMopubInterstitialAdapter.h"
 #import <DIOSDK/DIOController.h>
-
+#import "MoPub.h"
 
 @interface DIOMopubInterstitialAdapter ()
 
@@ -29,12 +29,28 @@
                                          userInfo:@{NSLocalizedDescriptionKey:@"DIOController not initialized!"}];
         [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError: error];
     }else {
+        DIOConsentState state = [[MoPub sharedInstance] canCollectPersonalInfo] ? DIOConsentStateYES : DIOConsentStateNO;
+        DIOConsentState gdpr = [[MoPub sharedInstance] isGDPRApplicable] ? DIOConsentStateYES : DIOConsentStateNO;
+        [[DIOController sharedInstance] setConsentData:state gdprState:gdpr];
+        [[DIOController sharedInstance] setMediationPlatform:DIOMediationPlatformMopub];
+
+        
         [self loadDioInterstitial:placementId];
     }
 }
 
 - (void)loadDioInterstitial:(NSString *)placementId{
-    DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
+    DIOPlacement *placement;
+    @try {
+        placement = [[DIOController sharedInstance] placementWithId:placementId];
+    } @catch (NSException *exception) {
+        NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                                             code:100
+                                         userInfo:@{NSLocalizedDescriptionKey:@"Invalid placement"}];
+        [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError: error];
+        return;
+    }
+    
     DIOAdRequest *request = [placement newAdRequest];
     
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
@@ -69,6 +85,7 @@
                     break;
                     
                 case DIOAdEventOnFailedToShow:
+                    [self.delegate interstitialCustomEventDidDisappear: self];
                     NSLog(@"AdEventOnFailedToShow");
                     self.dioAd = nil;
                     break;
