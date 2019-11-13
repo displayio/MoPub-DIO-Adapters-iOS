@@ -40,10 +40,8 @@
 }
 
 - (void)loadDioRewardedVideo:(NSString *)placementId{
-    DIOPlacement *placement;
-    @try {
-        placement = [[DIOController sharedInstance] placementWithId:placementId];
-    } @catch (NSException *exception) {
+    DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
+    if (!placement) {
         NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                              code:100
                                          userInfo:@{NSLocalizedDescriptionKey:@"Invalid placement"}];
