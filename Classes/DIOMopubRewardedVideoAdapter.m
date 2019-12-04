@@ -90,10 +90,15 @@
                     NSLog(@"AdEventOnClicked");
                     break;
                     
-                case DIOAdEventOnFailedToShow:
+                case DIOAdEventOnFailedToShow: {
+                    NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                                                         code:100
+                                                     userInfo:@{NSLocalizedDescriptionKey:@"Failed to show ad"}];
+                    [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error: error];
                     NSLog(@"AdEventOnFailedToShow");
                     self.dioAd = nil;
                     break;
+                }
                     
                 case DIOAdEventOnClosed:
                     [self.delegate rewardedVideoWillDisappearForCustomEvent:self];

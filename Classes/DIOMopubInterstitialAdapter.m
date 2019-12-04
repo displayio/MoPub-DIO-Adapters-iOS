@@ -82,11 +82,15 @@
                     NSLog(@"AdEventOnClicked");
                     break;
                     
-                case DIOAdEventOnFailedToShow:
-                    [self.delegate interstitialCustomEventDidDisappear: self];
+                case DIOAdEventOnFailedToShow: {
+                    NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                                                         code:100
+                                                     userInfo:@{NSLocalizedDescriptionKey:@"Failed to show ad"}];
+                    [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError: error];
                     NSLog(@"AdEventOnFailedToShow");
                     self.dioAd = nil;
                     break;
+                }
                     
                 case DIOAdEventOnClosed:
                     [self.delegate interstitialCustomEventWillDisappear: self];
@@ -96,6 +100,8 @@
                     break;
                     
                 case DIOAdEventOnAdCompleted:
+                    [self.delegate interstitialCustomEventWillDisappear: self];
+                    [self.delegate interstitialCustomEventDidDisappear: self];
                     NSLog(@"AdEventOnAdCompleted");
                     self.dioAd = nil;
                     break;
