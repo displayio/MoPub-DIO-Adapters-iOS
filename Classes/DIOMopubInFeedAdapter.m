@@ -16,7 +16,11 @@
 
 @implementation DIOMopubInFeedAdapter
 
-- (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info{
+- (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info {
+   [self requestAdWithSize:size customEventInfo:info adMarkup:nil];
+}
+
+- (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info adMarkup:(NSString *)adMarkup {
     NSString *placementId = [info objectForKey:@"placementid"];
     
     if (![DIOController sharedInstance].initialized) {
@@ -48,18 +52,17 @@
     
     DIOAdRequest *request = [placement newAdRequest];
     
-    [request setDetailsRequired:YES];
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
             [self.delegate bannerCustomEvent:self didLoadAd:[ad view]];
-        } failedHandler:^(NSString *message){
-            NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+        } failedHandler:^(NSError *error){
+            NSError *error1 = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                  code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:message}];
-            [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
-            NSLog(@"%@", message);
+                                             userInfo:@{NSLocalizedDescriptionKey:error.localizedDescription}];
+            [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error1];
+            NSLog(@"%@", error.localizedDescription);
         }];
-    } noAdHandler:^{
+    } noAdHandler:^(NSError *error){
         NSLog(@"No ad");
     }];
 }

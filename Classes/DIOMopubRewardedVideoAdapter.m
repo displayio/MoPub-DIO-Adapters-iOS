@@ -19,7 +19,11 @@
 
 @implementation DIOMopubRewardedVideoAdapter
 
-- (void)requestRewardedVideoWithCustomEventInfo:(NSDictionary *)info{
+- (void)requestRewardedVideoWithCustomEventInfo:(NSDictionary *)info {
+    [self requestRewardedVideoWithCustomEventInfo:info adMarkup:nil];
+}
+
+- (void)requestRewardedVideoWithCustomEventInfo:(NSDictionary *)info adMarkup:(NSString *)adMarkup {
     
     NSString *placementId = [info objectForKey:@"placementid"];
     
@@ -57,14 +61,14 @@
             
             [self.delegate rewardedVideoDidLoadAdForCustomEvent:self];
             NSLog(@"Ad for placement %@ received!", placementId);
-        } failedHandler:^(NSString *message){
-            NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+        } failedHandler:^(NSError *error){
+            NSError *error1 = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                  code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:message}];
-            [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error:error];
-            NSLog(@"%@", message);
+                                             userInfo:@{NSLocalizedDescriptionKey:error.localizedDescription}];
+            [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error:error1];
+            NSLog(@"%@", error.localizedDescription);
         }];
-    } noAdHandler:^{
+    } noAdHandler:^(NSError *error){
         NSLog(@"No ad provider");
     }];
 }

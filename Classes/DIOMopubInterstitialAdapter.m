@@ -18,7 +18,11 @@
 
 @implementation DIOMopubInterstitialAdapter
 
-- (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info{
+- (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info {
+    [self requestInterstitialWithCustomEventInfo:info adMarkup:nil];
+}
+
+- (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info adMarkup:(NSString *)adMarkup {
     
         NSString *placementId = [info objectForKey:@"placementid"];
     
@@ -55,14 +59,14 @@
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
             self.dioAd = ad;
             [self.delegate interstitialCustomEvent:self didLoadAd:ad];
-        } failedHandler:^(NSString *message){
-            NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+        } failedHandler:^(NSError *error){
+            NSError *error1 = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                  code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:message}];
-            [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError: error];
-            NSLog(@"%@", message);
+                                             userInfo:@{NSLocalizedDescriptionKey:error.localizedDescription}];
+            [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError: error1];
+            NSLog(@"%@", error.localizedDescription);
         }];
-    } noAdHandler:^{
+    } noAdHandler:^(NSError *error){
         NSLog(@"No ad provider");
     }];
 }
