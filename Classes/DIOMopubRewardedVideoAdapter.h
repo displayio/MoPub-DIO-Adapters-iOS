@@ -11,9 +11,7 @@
 #elif __has_include(<MoPubSDKFramework/MoPub.h>)
 #import <MoPubSDKFramework/MoPub.h>
 #else
-#import "MPRewardedVideo.h"
-#import "MPRewardedVideoCustomEvent.h"
-#import "MPRewardedVideoReward.h"
+#import "MoPub.h"
 #endif
 
 NS_ASSUME_NONNULL_BEGIN

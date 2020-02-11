@@ -7,8 +7,8 @@
 //
 
 #import "DIOMopubInterstitialAdapter.h"
+
 #import <DIOSDK/DIOController.h>
-#import "MoPub.h"
 
 @interface DIOMopubInterstitialAdapter ()
 

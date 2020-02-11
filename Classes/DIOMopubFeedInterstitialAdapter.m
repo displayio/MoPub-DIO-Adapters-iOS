@@ -11,8 +11,6 @@
 #import <DIOSDK/DIOController.h>
 #import <DIOSDK/DIOFeedInterstitialContainer.h>
 
-#import "MoPub.h"
-
 @implementation DIOMopubFeedInterstitialAdapter
 
 - (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info {

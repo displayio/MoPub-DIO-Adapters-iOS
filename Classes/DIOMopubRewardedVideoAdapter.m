@@ -7,8 +7,8 @@
 //
 
 #import "DIOMopubRewardedVideoAdapter.h"
+
 #import <DIOSDK/DIOController.h>
-#import "MoPub.h"
 
 @interface DIOMopubRewardedVideoAdapter ()
 

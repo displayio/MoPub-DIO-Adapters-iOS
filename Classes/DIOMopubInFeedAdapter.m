@@ -7,8 +7,8 @@
 //
 
 #import "DIOMopubInFeedAdapter.h"
+
 #import <DIOSDK/DIOController.h>
-#import "MoPub.h"
 
 @interface DIOMopubInFeedAdapter ()
 

@@ -7,8 +7,8 @@
 //
 
 #import "DIOMopubMediumRectangleAdapter.h"
+
 #import <DIOSDK/DIOController.h>
-#import "MoPub.h"
 
 @interface DIOMopubMediumRectangleAdapter ()
 

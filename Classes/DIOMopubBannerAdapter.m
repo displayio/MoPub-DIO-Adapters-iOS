@@ -7,8 +7,8 @@
 //
 
 #import "DIOMopubBannerAdapter.h"
+
 #import <DIOSDK/DIOController.h>
-#import "MoPub.h"
 
 @interface DIOMopubBannerAdapter ()
 
