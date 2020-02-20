@@ -1,17 +1,17 @@
 //
-//  DIOMopubFeedInterstitialAdapter.m
+//  DIOMopubInterscrollerAdapter.m
 //  MopubAdapterForiOS
 //
 //  Created by Ariel Malka on 12/22/19.
 //  Copyright © 2019 rdorofeev. All rights reserved.
 //
 
-#import "DIOMopubFeedInterstitialAdapter.h"
+#import "DIOMopubInterscrollerAdapter.h"
 
 #import <DIOSDK/DIOController.h>
-#import <DIOSDK/DIOFeedInterstitialContainer.h>
+#import <DIOSDK/DIOInterscrollerContainer.h>
 
-@implementation DIOMopubFeedInterstitialAdapter
+@implementation DIOMopubInterscrollerAdapter
 
 - (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info {
    [self requestAdWithSize:size customEventInfo:info adMarkup:nil];
@@ -27,17 +27,17 @@
                                          userInfo:@{NSLocalizedDescriptionKey:@"DIOController not initialized!"}];
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error];
     }else {
-        NSLog(@"Trying to load Feed Interstitial for placement %@", placementId);
+        NSLog(@"Trying to load Interscroller for placement %@", placementId);
         DIOConsentState state = [[MoPub sharedInstance] canCollectPersonalInfo] ? DIOConsentStateYES : DIOConsentStateNO;
         DIOConsentState gdpr = [[MoPub sharedInstance] isGDPRApplicable] ? DIOConsentStateYES : DIOConsentStateNO;
         [[DIOController sharedInstance] setConsentData:state gdprState:gdpr];
         [[DIOController sharedInstance] setMediationPlatform:DIOMediationPlatformMopub];
         
-        [self loadDioFeedInterstitial:placementId];
+        [self loadDioInterscroller:placementId];
     }
 }
 
-- (void)loadDioFeedInterstitial:(NSString *)placementId{
+- (void)loadDioInterscroller:(NSString *)placementId{
     DIOPlacement *placement = [[DIOController sharedInstance] placementWithId:placementId];
     if (!placement) {
         NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
@@ -49,7 +49,7 @@
     
     DIOAdRequest *request = [placement newAdRequest];
     
-    DIOFeedInterstitialContainer *container = [[DIOFeedInterstitialContainer alloc] init];
+    DIOInterscrollerContainer *container = [[DIOInterscrollerContainer alloc] init];
     
     [container loadWithAdRequest:request completionHandler:^(DIOAd *ad){
         NSLog(@"AD LOADED");

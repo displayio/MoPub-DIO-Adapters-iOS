@@ -1,5 +1,5 @@
 //
-//  DIOMopubFeedInterstitialAdapter.h
+//  DIOMopubInterscrollerAdapter.h
 //  MopubAdapterForiOS
 //
 //  Created by Ariel Malka on 12/22/19.
@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIOMopubFeedInterstitialAdapter : MPBannerCustomEvent
+@interface DIOMopubInterscrollerAdapter : MPBannerCustomEvent
 
 @end
 
