@@ -124,4 +124,9 @@
     }
 }
 
+- (BOOL)enableAutomaticImpressionAndClickTracking
+{
+    return NO;
+}
+
 @end

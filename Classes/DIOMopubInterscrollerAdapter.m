@@ -52,6 +52,29 @@
     DIOInterscrollerContainer *container = [[DIOInterscrollerContainer alloc] init];
     
     [container loadWithAdRequest:request completionHandler:^(DIOAd *ad){
+        [ad setEventHandler:^(DIOAdEvent event) {
+            switch (event) {
+                case DIOAdEventOnShown:
+                    [self.delegate trackImpression];
+                    break;
+                case DIOAdEventOnFailedToShow:{
+                    NSError *errorToShow = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                        code:100
+                        userInfo:@{NSLocalizedDescriptionKey:@"Failed to show ad"}];
+                    [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: errorToShow];
+                    break;
+                }
+                case DIOAdEventOnClicked:
+                    [self.delegate trackClick];
+                    break;
+                case DIOAdEventOnClosed:
+                    [self.delegate bannerCustomEventDidCollapseAd:self];
+                    break;
+                case DIOAdEventOnAdCompleted:
+                    NSLog(@"AD COMPLETED");
+                    break;
+            }
+        }];
         NSLog(@"AD LOADED");
     } errorHandler:^(NSError *error) {
         NSLog(@"AD FAILED TO LOAD: %@", error.localizedDescription);
@@ -63,6 +86,11 @@
     }];
     
     [self.delegate bannerCustomEvent:self didLoadAd:[container view]];
+}
+
+- (BOOL)enableAutomaticImpressionAndClickTracking
+{
+    return NO;
 }
 
 @end

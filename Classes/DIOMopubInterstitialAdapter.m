@@ -83,6 +83,7 @@
                     break;
                     
                 case DIOAdEventOnClicked:
+                    [self.delegate trackClick];
                     NSLog(@"AdEventOnClicked");
                     break;
                     
@@ -112,6 +113,11 @@
             }
         }];
     }
+}
+
+- (BOOL)enableAutomaticImpressionAndClickTracking
+{
+    return NO;
 }
 
 @end

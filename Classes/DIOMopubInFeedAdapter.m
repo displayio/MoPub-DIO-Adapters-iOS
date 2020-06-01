@@ -54,17 +54,45 @@
     
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
+            [ad setEventHandler:^(DIOAdEvent event) {
+                switch (event) {
+                    case DIOAdEventOnShown:
+                        [self.delegate trackImpression];
+                        break;
+                    case DIOAdEventOnFailedToShow:{
+                        NSError *errorToShow = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                            code:100
+                            userInfo:@{NSLocalizedDescriptionKey:@"Failed to show ad"}];
+                        [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: errorToShow];
+                        break;
+                    }
+                    case DIOAdEventOnClicked:
+                        [self.delegate trackClick];
+                        break;
+                    case DIOAdEventOnClosed:
+                        [self.delegate bannerCustomEventDidCollapseAd:self];
+                        break;
+                    case DIOAdEventOnAdCompleted:
+                        NSLog(@"AD COMPLETED");
+                        break;
+                }
+            }];
             [self.delegate bannerCustomEvent:self didLoadAd:[ad view]];
         } failedHandler:^(NSError *error){
             NSError *error1 = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                  code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:error.localizedDescription}];
+                                                 userInfo:@{NSLocalizedDescriptionKey:error.localizedDescription}];
             [self.delegate bannerCustomEvent:self didFailToLoadAdWithError: error1];
             NSLog(@"%@", error.localizedDescription);
         }];
     } noAdHandler:^(NSError *error){
         NSLog(@"No ad");
     }];
+}
+
+- (BOOL)enableAutomaticImpressionAndClickTracking
+{
+    return NO;
 }
 
 @end
