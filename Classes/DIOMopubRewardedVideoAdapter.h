@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIOMopubRewardedVideoAdapter : MPRewardedVideoCustomEvent
+@interface DIOMopubRewardedVideoAdapter : MPFullscreenAdAdapter<MPThirdPartyFullscreenAdAdapter>
 
 @end
 

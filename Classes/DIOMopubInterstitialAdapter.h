@@ -16,8 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIOMopubInterstitialAdapter : MPInterstitialCustomEvent
-
+@interface DIOMopubInterstitialAdapter : MPFullscreenAdAdapter<MPThirdPartyFullscreenAdAdapter> 
 
 @end
 

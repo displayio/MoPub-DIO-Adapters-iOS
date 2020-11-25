@@ -14,11 +14,9 @@
 #import "MoPub.h"
 #endif
 
-#import <DIOSDK/DIOController.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIOMopubBannerAdapter : MPBannerCustomEvent
+@interface DIOMopubBannerAdapter : MPInlineAdAdapter <MPThirdPartyInlineAdAdapter>
 
 @end
 

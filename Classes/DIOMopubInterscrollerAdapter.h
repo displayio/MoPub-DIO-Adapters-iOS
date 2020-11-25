@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIOMopubInterscrollerAdapter : MPBannerCustomEvent
+@interface DIOMopubInterscrollerAdapter : MPInlineAdAdapter <MPThirdPartyInlineAdAdapter>
 
 @end
 

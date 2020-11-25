@@ -19,28 +19,24 @@
 
 @implementation DIOMopubRewardedVideoAdapter
 
-- (void)requestRewardedVideoWithCustomEventInfo:(NSDictionary *)info {
-    [self requestRewardedVideoWithCustomEventInfo:info adMarkup:nil];
-}
-
-- (void)requestRewardedVideoWithCustomEventInfo:(NSDictionary *)info adMarkup:(NSString *)adMarkup {
-    
+- (void)requestAdWithAdapterInfo:(NSDictionary *)info adMarkup:(NSString *)adMarkup {
     NSString *placementId = [info objectForKey:@"placementid"];
-    
-    if (![DIOController sharedInstance].initialized) {
-        NSLog(@"Error: DIOController not initialized!");
-        NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
-                                             code:100
-                                         userInfo:@{NSLocalizedDescriptionKey:@"DIOController not initialized!"}];
-        [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error:error];
-    }else {
-        DIOConsentState state = [[MoPub sharedInstance] canCollectPersonalInfo] ? DIOConsentStateYES : DIOConsentStateNO;
-        DIOConsentState gdpr = [[MoPub sharedInstance] isGDPRApplicable] ? DIOConsentStateYES : DIOConsentStateNO;
-        [[DIOController sharedInstance] setConsentData:state gdprState:gdpr];
-        [[DIOController sharedInstance] setMediationPlatform:DIOMediationPlatformMopub];
-        
-        [self loadDioRewardedVideo:placementId];
-    }
+
+ if (![DIOController sharedInstance].initialized) {
+    NSLog(@"Error: DIOController not initialized!");
+    NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
+                                         code:100
+                                     userInfo:@{NSLocalizedDescriptionKey:@"DIOController not initialized!"}];
+     [self.delegate fullscreenAdAdapter:self didFailToLoadAdWithError:error];
+
+} else {
+    DIOConsentState state = [[MoPub sharedInstance] canCollectPersonalInfo] ? DIOConsentStateYES : DIOConsentStateNO;
+    DIOConsentState gdpr = [[MoPub sharedInstance] isGDPRApplicable] ? DIOConsentStateYES : DIOConsentStateNO;
+    [[DIOController sharedInstance] setConsentData:state gdprState:gdpr];
+    [[DIOController sharedInstance] setMediationPlatform:DIOMediationPlatformMopub];
+
+    [self loadDioRewardedVideo:placementId];
+ }
 }
 
 - (void)loadDioRewardedVideo:(NSString *)placementId{
@@ -49,48 +45,48 @@
         NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                              code:100
                                          userInfo:@{NSLocalizedDescriptionKey:@"Invalid placement"}];
-        [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error: error];
+        [self.delegate fullscreenAdAdapter:self didFailToLoadAdWithError:error];
         return;
     }
     
     DIOAdRequest *request = [placement newAdRequest];
-
+    
     [request requestAdWithAdReceivedHandler:^(DIOAdProvider *adProvider) {
         [adProvider loadAdWithLoadedHandler:^(DIOAd *ad) {
             self.dioAd = ad;
-            
-            [self.delegate rewardedVideoDidLoadAdForCustomEvent:self];
-            NSLog(@"Ad for placement %@ received!", placementId);
+            [self.delegate fullscreenAdAdapterDidLoadAd:self];
+            [MPLogEvent adLoadSuccessForAdapter:NSStringFromClass(self.class)];
         } failedHandler:^(NSError *error){
             NSError *error1 = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                  code:100
                                              userInfo:@{NSLocalizedDescriptionKey:error.localizedDescription}];
-            [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error:error1];
-            NSLog(@"%@", error.localizedDescription);
+            [self.delegate fullscreenAdAdapter:self didFailToLoadAdWithError:error1];
+            NSLog(@"%@", error1.localizedDescription);
         }];
-    } noAdHandler:^(NSError *error){
+    } noAdHandler:^(NSError *error2){
+        [self.delegate fullscreenAdAdapter:self didFailToLoadAdWithError:error2];
         NSLog(@"No ad provider");
     }];
 }
 
--(BOOL)hasAdAvailable{
-//    NSLog(self.dioAd != nil ? @"DIO Ad is available" : @"DIO Ad is not available");
-    return self.dioAd != nil;
-}
-
-- (void)presentRewardedVideoFromViewController:(UIViewController *)rootViewController{
-    
+- (void)presentAdFromViewController:(UIViewController *)viewController {
     if (self.dioAd != nil) {
-        [self.dioAd showAdFromViewController:rootViewController eventHandler:^(DIOAdEvent event){
+        [self.dioAd showAdFromViewController:viewController eventHandler:^(DIOAdEvent event){
             switch (event) {
                 case DIOAdEventOnShown:
-                    [self.delegate trackImpression];
-                    [self.delegate rewardedVideoWillAppearForCustomEvent:self];
-                    [self.delegate rewardedVideoDidAppearForCustomEvent:self];
+                    [MPLogEvent adDidAppearForAdapter:NSStringFromClass(self.class)];
+                    [MPLogEvent adShowSuccessForAdapter:NSStringFromClass(self.class)];
+                    [self.delegate fullscreenAdAdapterAdWillAppear:self];
+                    [self.delegate fullscreenAdAdapterAdDidAppear:self];
+                    [self.delegate fullscreenAdAdapterDidTrackImpression:self];
                     NSLog(@"AdEventOnShown");
                     break;
                     
                 case DIOAdEventOnClicked:
+                    [MPLogEvent adTappedForAdapter:NSStringFromClass(self.class)];
+                    [self.delegate fullscreenAdAdapterDidReceiveTap:self];
+                    [self.delegate fullscreenAdAdapterWillLeaveApplication:self];
+                    [self.delegate fullscreenAdAdapterDidTrackClick:self];
                     NSLog(@"AdEventOnClicked");
                     break;
                     
@@ -98,24 +94,35 @@
                     NSError *error = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
                                                          code:100
                                                      userInfo:@{NSLocalizedDescriptionKey:@"Failed to show ad"}];
-                    [self.delegate rewardedVideoDidFailToLoadAdForCustomEvent:self error: error];
+                    [MPLogEvent adShowFailedForAdapter:NSStringFromClass(self.class) error:error];
+                    [self.delegate fullscreenAdAdapter:self didFailToLoadAdWithError:error];
                     NSLog(@"AdEventOnFailedToShow");
                     self.dioAd = nil;
                     break;
                 }
                     
                 case DIOAdEventOnClosed:
-                    [self.delegate rewardedVideoWillDisappearForCustomEvent:self];
-                    [self.delegate rewardedVideoDidDisappearForCustomEvent:self];
+                    [MPLogEvent adWillDisappearForAdapter:NSStringFromClass(self.class)];
+                    [self.delegate fullscreenAdAdapterAdWillDisappear:self];
+                    [MPLogEvent adDidDisappearForAdapter:NSStringFromClass(self.class)];
+                    [self.delegate fullscreenAdAdapterAdDidDisappear:self];
+                    
+                    if ([self.delegate respondsToSelector:@selector(fullscreenAdAdapterAdDidDismiss:)]) {
+                        [self.delegate fullscreenAdAdapterAdDidDismiss:self];
+                    }
                     NSLog(@"AdEventOnClosed");
                     self.dioAd = nil;
                     break;
                     
                 case DIOAdEventOnAdCompleted:
-                    [self.delegate rewardedVideoWillDisappearForCustomEvent:self];
-                    [self.delegate rewardedVideoDidDisappearForCustomEvent:self];
-                    [self.delegate rewardedVideoShouldRewardUserForCustomEvent:self reward:nil]; // TODO reward?
-
+                    [MPLogEvent adWillDisappearForAdapter:NSStringFromClass(self.class)];
+                    [self.delegate fullscreenAdAdapterAdWillDisappear:self];
+                    [MPLogEvent adDidDisappearForAdapter:NSStringFromClass(self.class)];
+                    [self.delegate fullscreenAdAdapterAdDidDisappear:self];
+                    
+                    if ([self.delegate respondsToSelector:@selector(fullscreenAdAdapterAdDidDismiss:)]) {
+                        [self.delegate fullscreenAdAdapterAdDidDismiss:self];
+                    }
                     NSLog(@"AdEventOnAdCompleted");
                     self.dioAd = nil;
                     break;
@@ -124,9 +131,15 @@
     }
 }
 
-- (BOOL)enableAutomaticImpressionAndClickTracking
-{
-    return NO;
+- (BOOL)isRewardExpected {
+    return YES;
 }
 
+- (BOOL)hasAdAvailable {
+    return self.dioAd != nil;
+}
+
+- (BOOL)enableAutomaticImpressionAndClickTracking {
+    return NO;
+}
 @end
