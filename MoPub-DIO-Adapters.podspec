@@ -20,6 +20,6 @@ Pod::Spec.new do |s|
     s.subspec 'Network' do |ns|
         ns.source_files = 'Classes/*.{h,m}'
         ns.dependency 'DIOSDK', '3.4.7'
-        ns.dependency 'mopub-ios-sdk/Core', '~> 5.8'
+        ns.dependency 'mopub-ios-sdk/Core', '~> 5.15'
     end
 end
