@@ -5,7 +5,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'MoPub-DIO-Adapters'
-    s.version          = '3.4.7'
+    s.version          = '3.5.0'
     s.summary          = 'DIO Adapters for mediating through MoPub.'
     s.homepage         = 'https://www.display.io/'
     s.license          = { :type => 'Apache-2.0', :file => 'LICENSE' }
@@ -15,11 +15,11 @@ Pod::Spec.new do |s|
     s.pod_target_xcconfig = { 'VALID_ARCHS' => 'arm64 x86_64' }
     s.static_framework = true
     s.subspec 'MoPub' do |ms|
-       ms.dependency 'mopub-ios-sdk/Core', '~> 5.8'
+       ms.dependency 'mopub-ios-sdk/Core', '~> 5.15'
     end
     s.subspec 'Network' do |ns|
         ns.source_files = 'Classes/*.{h,m}'
-        ns.dependency 'DIOSDK', '3.4.7'
+        ns.dependency 'DIOSDK', '3.5.0'
         ns.dependency 'mopub-ios-sdk/Core', '~> 5.15'
     end
 end
