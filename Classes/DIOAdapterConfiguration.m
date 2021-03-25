@@ -10,7 +10,7 @@
 
 @implementation DIOAdapterConfiguration
 
-NSString *ver = @"3.5.0";
+NSString *ver = @"3.5.1";
 
 - (void)initializeNetworkWithConfiguration:(NSDictionary<NSString *, id> *)configuration
                                   complete:(void(^)(NSError *))complete {

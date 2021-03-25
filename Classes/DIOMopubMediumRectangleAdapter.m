@@ -58,7 +58,7 @@
                 switch (event) {
                     case DIOAdEventOnShown:
                         [MPLogEvent adWillPresentModalForAdapter:NSStringFromClass(self.class)];
-                        [self.delegate inlineAdAdapterWillBeginUserAction:self];
+                        [self.delegate inlineAdAdapterDidTrackImpression:self];
                         break;
                     case DIOAdEventOnFailedToShow:{
                         NSError *errorToShow = [NSError errorWithDomain:@"https://appsrv.display.io/srv"
@@ -70,6 +70,8 @@
                     }
                     case DIOAdEventOnClicked:
                         [MPLogEvent adTappedForAdapter:NSStringFromClass(self.class)];
+                        [self.delegate inlineAdAdapterDidTrackClick:self];
+                        [self.delegate inlineAdAdapterWillBeginUserAction:self];
                         [self.delegate inlineAdAdapterWillLeaveApplication:self];
                         break;
                     case DIOAdEventOnClosed:
